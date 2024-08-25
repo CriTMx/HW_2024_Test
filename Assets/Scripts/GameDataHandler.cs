@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking; // To handle web requests
+using System;
 
 public class GameDataHandler : MonoBehaviour
 {
     /* Persistence: Start */
     public static GameDataHandler Instance { get; private set; }
+    public static Action OnDataFetchSuccess;
 
     private void Awake()
     {
@@ -26,14 +28,15 @@ public class GameDataHandler : MonoBehaviour
     private string dataObject;
 
     [SerializeField]
-    private string serverURL = "https://s3.ap-south-1.amazonaws.com/superstars.assetbundles.testbuild/doofus_game/doofus_diary.json";
+    private string serverURL = 
+        "https://s3.ap-south-1.amazonaws.com/superstars.assetbundles.testbuild/doofus_game/doofus_diary.json";
 
     public static float PlayerSpeed;
-    public static float MinPulpitDestroyTime, MaxPulpitDestroyTime, PulpitSpawnTime; 
+    public static float MinPulpitDestroyTime, MaxPulpitDestroyTime, PulpitSpawnTime;
 
     void Start()
     {
-        StartCoroutine(GetGameDataFromServer());
+        StartCoroutine(GetGameDataFromServer()); // Start the data fetch coroutine
     }
 
     IEnumerator GetGameDataFromServer()
@@ -65,6 +68,12 @@ public class GameDataHandler : MonoBehaviour
             MinPulpitDestroyTime = gameData.pulpit_data.min_pulpit_destroy_time;
             MaxPulpitDestroyTime = gameData.pulpit_data.max_pulpit_destroy_time;
             PulpitSpawnTime = gameData.pulpit_data.pulpit_spawn_time;
+
+            /* Invoke the fetch success event 
+             * to make sure respective game objects 
+             * initialize their data */
+
+            OnDataFetchSuccess?.Invoke();
         }
     }
 }

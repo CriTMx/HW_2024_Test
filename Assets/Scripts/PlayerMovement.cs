@@ -4,22 +4,37 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody rigidBody;
 
     private float moveX, moveZ;
+    private float playerSpeed;
+
+    private void Awake()
+    {
+        GameDataHandler.OnDataFetchSuccess += InitializePlayerData;
+    }
 
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
+        Debug.Log(GameDataHandler.PlayerSpeed);
         moveX = 0f;
         moveZ = 0f;
     }
 
     void Update()
     {
-        moveX = Input.GetAxis("Horizontal"); // Detect A or D key to move along X-axis
-        moveZ = Input.GetAxis("Vertical"); // Detect W or S key to move along Z-axis
+        moveX = Input.GetAxis("Horizontal"); // Detect any horizontal key or button to move along X-axis
+        moveZ = Input.GetAxis("Vertical"); // Detect any vertical key or button to move along Z-axis
 
-        transform.Translate(moveX * Time.deltaTime, 0f, moveZ * Time.deltaTime);
+        transform.Translate(moveX * playerSpeed * Time.deltaTime, 0f, moveZ * playerSpeed * Time.deltaTime);
+    }
+
+    private void OnDestroy()
+    {
+        GameDataHandler.OnDataFetchSuccess -= InitializePlayerData;
+    }
+
+    private void InitializePlayerData()
+    {
+        playerSpeed = GameDataHandler.PlayerSpeed;
     }
 }
