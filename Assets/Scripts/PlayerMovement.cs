@@ -15,7 +15,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(GameDataHandler.PlayerSpeed);
         moveX = 0f;
         moveZ = 0f;
     }
