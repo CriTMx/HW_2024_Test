@@ -7,34 +7,37 @@ public class PulpitSpawnHandler : MonoBehaviour
     private float minPulpitDestroyTime, maxPulpitDestroyTime; /* Values fetched from */
     private float pulpitSpawnTime;                            /* server json */
 
-    private float destroyTime;
+    private float destroyTime;  // Time pulpit will stay active for
 
-    private int countPulpitsInScene;
-    private int pulpitSpawnDirection;
+    private int countPulpitsInScene;    // Tracks number of active pulpits
+    private int pulpitSpawnDirection;   // Determines random absolute direction (forward, backward, left, right) to spawn new pulpit
 
-    private bool firstPulpitSpawn;
+    private bool firstPulpitSpawn;  // Enables initial spawn of first pulpit of the game at specified initial position
 
-    [SerializeField] private GameObject pulpitPrefab;
+    [SerializeField] private GameObject pulpitPrefab;   // holds pulpit prefab object
 
-    [SerializeField] private Vector3 pulpitCurSize = new(9f, 1f, 9f);
-    [SerializeField] private Vector3 pulpitNextSize = new(9f, 1f, 9f);
-    [SerializeField] private Vector3 pulpitInitialPos = Vector3.zero;
+    [SerializeField] private Vector3 pulpitCurSize = new(9f, 1f, 9f);   // Size of current pulpit, initially 9x1x9
+    [SerializeField] private Vector3 pulpitNextSize = new(9f, 1f, 9f);  // Size of next pulpit, initially 9x1x9, can add code to spawn random sized pulpits
+    [SerializeField] private Vector3 pulpitInitialPos = new Vector3(0f, 1f, 0f);   // Initial position of first pulpit of the game
 
-    private Vector3 pulpitCurPos;
-    private Vector3 pulpitNextPos;
+    private Vector3 pulpitCurPos;   // Keeps track of position of current pulpit
+    private Vector3 pulpitNextPos;  // Holds calculated value for position of next pulpit to spawn
 
-    [SerializeField] private int maxPulpitsInScene = 2;
+    [SerializeField] private int maxPulpitsInScene = 2; // Determines maximum pulpits in the game
 
     private void Awake()
     {
+        // Add method to data fetch success event
         GameDataHandler.OnDataFetchSuccess += InitializePulpitData;
     }
 
     void Start()
     {
+        // Initialize count and first spawn
         countPulpitsInScene = 0;
         firstPulpitSpawn = true;
 
+        // Begin async spawning coroutine
         StartCoroutine(SpawnerCoroutine());
     }
 
@@ -47,6 +50,7 @@ public class PulpitSpawnHandler : MonoBehaviour
     {
         while (true)
         {
+            // Spawn new pulpit within spawn duration if spawning more is still allowed
             if (countPulpitsInScene < maxPulpitsInScene)
                 SpawnPulpit();
             yield return new WaitForSeconds(pulpitSpawnTime);
@@ -55,6 +59,7 @@ public class PulpitSpawnHandler : MonoBehaviour
 
     IEnumerator DestroyerCoroutine(GameObject pulpit, float destroyTime)
     {
+        // Wait for destroyTime seconds before destroying pulpits
         yield return new WaitForSeconds(destroyTime);
 
         Destroy(pulpit);
@@ -66,17 +71,20 @@ public class PulpitSpawnHandler : MonoBehaviour
         GameObject pulpitInstance;
         if (firstPulpitSpawn)
         {
-            // Create a new pulpit at defined origin
+            // Create a new first pulpit at defined origin
             pulpitInstance = 
                 Instantiate(pulpitPrefab, pulpitInitialPos, pulpitPrefab.transform.rotation);
 
+            // This if-block will no longer be accessed throughout the rest of the game
             firstPulpitSpawn = false;
-            pulpitCurPos = pulpitInitialPos;
+
+            // Update current position with that of latest pulpit
+            pulpitCurPos = pulpitInitialPos; 
         }
 
         else
         {
-            pulpitSpawnDirection = Random.Range(0, 4);
+            pulpitSpawnDirection = Random.Range(0, 4); // Choose between 1 of 4 possible adjacent sides at random
 
             pulpitNextPos = pulpitSpawnDirection switch // Decides which adjacent side to spawn the next platform at
             {
@@ -90,24 +98,29 @@ public class PulpitSpawnHandler : MonoBehaviour
             pulpitInstance =
                 Instantiate(pulpitPrefab, pulpitNextPos, pulpitPrefab.transform.rotation);
 
+            // Update current position with that of latest pulpit
             pulpitCurPos = pulpitNextPos;
         }
 
-        // Set new pulpit size
+        // Set new pulpit size (if random size every new pulpit)
         pulpitInstance.transform.localScale = pulpitNextSize;
+        // Update number of active pulpits
         countPulpitsInScene++;
 
+        // Initialize destroyTime and start Destroy coroutine
         destroyTime = Random.Range(minPulpitDestroyTime, maxPulpitDestroyTime);
         StartCoroutine(DestroyerCoroutine(pulpitInstance, destroyTime));
     }
 
     private void OnDestroy()
     {
+        // Remove method from action event
         GameDataHandler.OnDataFetchSuccess -= InitializePulpitData;
     }
 
     private void InitializePulpitData()
     {
+        // Initialize all fetched json data for the spawn conditions
         minPulpitDestroyTime = GameDataHandler.MinPulpitDestroyTime;
         maxPulpitDestroyTime = GameDataHandler.MaxPulpitDestroyTime;
         pulpitSpawnTime = GameDataHandler.PulpitSpawnTime;
