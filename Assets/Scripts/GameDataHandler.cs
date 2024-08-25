@@ -3,34 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking; // To handle web requests
 
-public class FetchGameData : MonoBehaviour
+public class GameDataHandler : MonoBehaviour
 {
+    /* Persistence: Start */
+    public static GameDataHandler Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    /* Persistence: End */
+
+    // Data
     private string dataObject;
 
     [SerializeField]
     private string serverURL = "https://s3.ap-south-1.amazonaws.com/superstars.assetbundles.testbuild/doofus_game/doofus_diary.json";
 
     public static float PlayerSpeed;
-    public static float MinPulpitDestroyTime, MaxPulpitDestroyTime, PulpitSpawnTime;
+    public static float MinPulpitDestroyTime, MaxPulpitDestroyTime, PulpitSpawnTime; 
 
     void Start()
     {
         StartCoroutine(GetGameDataFromServer());
     }
 
-    
-    void Update()
-    {
-        
-    }
-
     IEnumerator GetGameDataFromServer()
     {
         using UnityWebRequest server = UnityWebRequest.Get(serverURL); // Establish connection to the server
-        yield return server.SendWebRequest(); 
+        yield return server.SendWebRequest();
 
         if (server.result == UnityWebRequest.Result.ConnectionError || server.result == UnityWebRequest.Result.ProtocolError)
+        {
             Debug.Log(server.error); // Log error if server responds with connection error or protocol error
+
+            /* As there's no response from server, 
+             * initialize game data values to 0 
+             * to prevent unwanted behavior */
+
+            PlayerSpeed = 0f;
+            MinPulpitDestroyTime = 0f;
+            MaxPulpitDestroyTime = 0f;
+            PulpitSpawnTime = 0f;
+        }
 
         else
         {
@@ -45,6 +68,8 @@ public class FetchGameData : MonoBehaviour
         }
     }
 }
+
+// Serializable Classes to store JSON data
 
 [System.Serializable]
 public class GameData
