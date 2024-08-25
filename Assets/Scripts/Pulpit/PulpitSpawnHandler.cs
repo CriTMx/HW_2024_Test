@@ -116,6 +116,9 @@ public class PulpitSpawnHandler : MonoBehaviour
 
         // Initialize destroyTime and start Destroy coroutine
         destroyTime = Random.Range(minPulpitDestroyTime, maxPulpitDestroyTime);
+        // Set instance's destroyTime to generated destroyTime for display purpose
+        pulpitInstance.GetComponent<PulpitBehavior>().destroyTime = destroyTime;
+
         StartCoroutine(DestroyerCoroutine(pulpitInstance, destroyTime));
     }
 
