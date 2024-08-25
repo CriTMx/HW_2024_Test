@@ -15,9 +15,10 @@ public class PulpitSpawnHandler : MonoBehaviour
     private bool firstPulpitSpawn;  // Enables initial spawn of first pulpit of the game at specified initial position
 
     [SerializeField] private GameObject pulpitPrefab;   // holds pulpit prefab object
+    [SerializeField] private GameObject startBox; // holds starting platform object
 
-    [SerializeField] private Vector3 pulpitCurSize = new(9f, 1f, 9f);   // Size of current pulpit, initially 9x1x9
-    [SerializeField] private Vector3 pulpitNextSize = new(9f, 1f, 9f);  // Size of next pulpit, initially 9x1x9, can add code to spawn random sized pulpits
+    [SerializeField] private Vector3 pulpitCurSize = new(7f, 1f, 7f);   // Size of current pulpit, initially 7x1x7
+    [SerializeField] private Vector3 pulpitNextSize = new(7f, 1f, 7f);  // Size of next pulpit, initially 7x1x7, can add code to spawn random sized pulpits
     [SerializeField] private Vector3 pulpitInitialPos = new Vector3(0f, 1f, 0f);   // Initial position of first pulpit of the game
 
     private Vector3 pulpitCurPos;   // Keeps track of position of current pulpit
@@ -37,8 +38,8 @@ public class PulpitSpawnHandler : MonoBehaviour
         countPulpitsInScene = 0;
         firstPulpitSpawn = true;
 
-        // Begin async spawning coroutine
-        StartCoroutine(SpawnerCoroutine());
+        // Delayed spawn startup, lets the object catch up with json fetching
+        Invoke("DeferredSpawnStartup", 1f);
     }
 
     void Update()
@@ -46,7 +47,13 @@ public class PulpitSpawnHandler : MonoBehaviour
 
     }
 
-    IEnumerator SpawnerCoroutine()
+    void DeferredSpawnStartup()
+    {
+        Destroy(startBox);
+        StartCoroutine(SpawnerCoroutine());
+    }
+
+    public IEnumerator SpawnerCoroutine()
     {
         while (true)
         {
