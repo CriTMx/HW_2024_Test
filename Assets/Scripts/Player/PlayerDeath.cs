@@ -6,14 +6,14 @@ using TMPro;
 
 public class PlayerDeath : MonoBehaviour
 {
-    public static Action OnPlayerDeath;     // Custom event to invoke to inform other scripts that the player has died
+    public static Action OnPlayerDeath;         // Custom event to invoke to inform other scripts that the player has died
 
     [SerializeField] private float animationTime = 1.5f;    // Shrinking animation upon death, this determines the duration
-    private float curTime = 0f;     // Stores current time to compare with
+    private float curTime = 0f;                             // Stores current time to compare with
 
     void Update()
     {
-        if (gameObject.transform.position.y <= 0)   // If the player falls below y=0, kill player
+        if (gameObject.transform.position.y <= 0)           // If the player falls below y=0, kill player
             StartCoroutine(PlayerDeathAnimationCoroutine());
     }
 
@@ -28,12 +28,11 @@ public class PlayerDeath : MonoBehaviour
             // Linearly interpolate between current size and zero size, gradually starting from 0 till 1
             gameObject.transform.localScale = Vector3.Lerp(curSize, deathSize, curTime/animationTime);
 
-            // Update current time
-            curTime += Time.deltaTime;
+            curTime += Time.deltaTime;  // Update current time
             yield return null;
         }
 
-        Destroy(gameObject);
-        OnPlayerDeath?.Invoke();
+        Destroy(gameObject);        // Destroy the player object upon death
+        OnPlayerDeath?.Invoke();    // Invoke OnPlayerDeath event for other scripts to use
     }
 }

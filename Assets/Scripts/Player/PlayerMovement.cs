@@ -21,10 +21,15 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        moveX = Input.GetAxis("Horizontal"); // Detect any horizontal key or button to move along X-axis
-        moveZ = Input.GetAxis("Vertical"); // Detect any vertical key or button to move along Z-axis
+        // Detect horizontal and vertical axis inputs to move the player
+        moveX = Input.GetAxis("Horizontal"); 
+        moveZ = Input.GetAxis("Vertical"); 
 
-        transform.Translate(moveX * playerSpeed * Time.deltaTime, 0f, moveZ * playerSpeed * Time.deltaTime);
+        // Create a vec3 with required move parameters
+        Vector3 moveDir = new(moveX, 0f, moveZ); 
+
+        // Add motion to the player
+        transform.Translate(playerSpeed * Time.deltaTime * moveDir, Space.World); 
     }
 
     private void OnDestroy()

@@ -23,7 +23,6 @@ public class GameDataHandler : MonoBehaviour
     void Start()
     {
         StartCoroutine(GetGameDataFromServer()); // Start the data fetch coroutine
-        
     }
 
     IEnumerator GetGameDataFromServer()

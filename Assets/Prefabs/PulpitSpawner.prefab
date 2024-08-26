@@ -49,7 +49,7 @@ MonoBehaviour:
   pulpitCurSize: {x: 7, y: 1, z: 7}
   pulpitNextSize: {x: 7, y: 1, z: 7}
   pulpitInitialPos: {x: 0, y: 0, z: 0}
-  minPulpitSizeRange: 4
-  maxPulpitSizeRange: 8
+  minPulpitSizeRange: 8
+  maxPulpitSizeRange: 10
   animationTime: 0.2
   maxPulpitsInScene: 2

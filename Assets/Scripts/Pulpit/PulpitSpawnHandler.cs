@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PulpitSpawnHandler : MonoBehaviour
 {
-    private float minPulpitDestroyTime, maxPulpitDestroyTime; /* Values fetched from */
-    private float pulpitSpawnTime;                            /* server json */
+    private float minPulpitDestroyTime, maxPulpitDestroyTime; // Values fetched from
+    private float pulpitSpawnTime;                            // server json 
 
     private float destroyTime;          // Time pulpit will stay active for
 
@@ -18,12 +18,12 @@ public class PulpitSpawnHandler : MonoBehaviour
     [SerializeField] private GameObject pulpitPrefab;   // holds pulpit prefab object
     [SerializeField] private GameObject startBox;       // holds starting platform object
 
-    [SerializeField] private Vector3 pulpitCurSize = new(7f, 1f, 7f);   // Size of current pulpit, initially 7x1x7
-    [SerializeField] private Vector3 pulpitNextSize = new(7f, 1f, 7f);  // Size of next pulpit, initially 7x1x7, can add code to spawn random sized pulpits
-    [SerializeField] private Vector3 pulpitInitialPos = new Vector3(0f, 1f, 0f);   // Initial position of first pulpit of the game
+    [SerializeField] private Vector3 pulpitCurSize = new(7f, 1f, 7f);               // Size of current pulpit, initially 7x1x7
+    [SerializeField] private Vector3 pulpitNextSize = new(7f, 1f, 7f);              // Size of next pulpit, initially 7x1x7, can add code to spawn random sized pulpits
+    [SerializeField] private Vector3 pulpitInitialPos = new Vector3(0f, 1f, 0f);    // Initial position of first pulpit of the game
 
-    [SerializeField] private float minPulpitSizeRange = 4f;     // Minimum size for random-sized pulpit generation
-    [SerializeField] private float maxPulpitSizeRange = 8f;     // Maximum size for random-sized pulpit generation
+    [SerializeField] private float minPulpitSizeRange = 8f;     // Minimum size for random-sized pulpit generation
+    [SerializeField] private float maxPulpitSizeRange = 10f;    // Maximum size for random-sized pulpit generation
 
     [SerializeField] private float animationTime = 0.2f;
 
@@ -74,27 +74,11 @@ public class PulpitSpawnHandler : MonoBehaviour
 
     IEnumerator DestroyerCoroutine(GameObject pulpit, float destroyTime)
     {
+        // Animation snippet removed temporarily due to spawn delay bug
+
+
         // Wait for destroyTime seconds before destroying pulpits
         yield return new WaitForSeconds(destroyTime);
-
-        /* Animation disabled due to 
-         * it breaking the pulpit spawning*/
-
-
-        /* 
-        // Run shrinking animation before destroying the pulpit
-        Vector3 curSize = pulpit.transform.localScale;
-        Vector3 deathSize = Vector3.zero;
-        float curTime = 0f;
-
-        while (curTime <= animationTime)
-        {
-            // Linearly interpolate pulpit size to zero gradually over the animation time
-            pulpit.transform.localScale = Vector3.Lerp(curSize, deathSize, curTime / animationTime);
-            curTime += Time.deltaTime;
-            yield return null;
-        }
-        */
 
         // Destroy pulpit once animation is complete
         Destroy(pulpit);
@@ -103,9 +87,22 @@ public class PulpitSpawnHandler : MonoBehaviour
         countPulpitsInScene--;
     }
 
+
+    /* Random sized pulpit spawning not being
+     * used currently as it is taking a lot
+     * of time to test the game difficulty
+     based on different sized pulpits */
+
     private void SpawnPulpit()
     {
         GameObject pulpitInstance;
+        
+        /*pulpitNextSize =
+            new Vector3(
+                Random.Range(minPulpitSizeRange, maxPulpitsInScene),
+                1f,
+                Random.Range(minPulpitSizeRange, maxPulpitsInScene));*/
+
         if (firstPulpitSpawn)
         {
             // Create a new first pulpit at defined origin
@@ -123,25 +120,35 @@ public class PulpitSpawnHandler : MonoBehaviour
         {
             pulpitSpawnDirection = Random.Range(0, 4);  // Choose between 1 of 4 possible adjacent sides at random
 
+            float pulpitNextPosZ = (pulpitCurSize.z / 2) + (pulpitNextSize.z / 2);
+            float pulpitNextPosX = (pulpitCurSize.x / 2) + (pulpitNextSize.x / 2);
+
             pulpitNextPos = pulpitSpawnDirection switch // Decides which adjacent side to spawn the next platform at
             {
-                0 => pulpitCurPos + new Vector3(0f, 0f, (pulpitCurSize.z / 2) + (pulpitNextSize.z / 2)), // Next pulpit spawns in front of current
-                1 => pulpitCurPos - new Vector3(0f, 0f, (pulpitCurSize.z / 2) + (pulpitNextSize.z / 2)), // Next platform spawns behind current
-                2 => pulpitCurPos - new Vector3((pulpitCurSize.x / 2) + (pulpitNextSize.x / 2), 0f, 0f), // Next platform spawns to the left
-                3 => pulpitCurPos + new Vector3((pulpitCurSize.x / 2) + (pulpitNextSize.x / 2), 0f, 0f), // Next platform spawns to the right
-                _ => pulpitCurPos + new Vector3(0f, 0f, (pulpitCurSize.z / 2) + (pulpitNextSize.z / 2))  // Default case (front spawn)
+                0 => pulpitCurPos + new Vector3(0f, 0f, pulpitNextPosZ), // Next pulpit spawns in front of current
+                1 => pulpitCurPos - new Vector3(0f, 0f, pulpitNextPosZ), // Next platform spawns behind current
+                2 => pulpitCurPos - new Vector3(pulpitNextPosX, 0f, 0f), // Next platform spawns to the left
+                3 => pulpitCurPos + new Vector3(pulpitNextPosX, 0f, 0f), // Next platform spawns to the right
+                _ => pulpitCurPos + new Vector3(0f, 0f, pulpitNextPosZ)  // Default case (front spawn)
             };
 
             // Create new pulpit at random adjacent position
             pulpitInstance =
                 Instantiate(pulpitPrefab, pulpitNextPos, pulpitPrefab.transform.rotation);
 
+            // Update current pulpit size with that of the latest one
+            pulpitCurSize = pulpitNextSize;
+
             // Update current position with that of latest pulpit
             pulpitCurPos = pulpitNextPos;
         }
 
+        
+
         // Set new pulpit size (if random size every new pulpit)
         pulpitInstance.transform.localScale = pulpitNextSize;
+        pulpitCurSize = pulpitNextSize;
+
         // Update number of active pulpits
         countPulpitsInScene++;
 
@@ -158,16 +165,16 @@ public class PulpitSpawnHandler : MonoBehaviour
         shouldSpawn = false;
     }
 
-    private void OnDisable()
+    /*private void OnDisable()
     {
-        /* Stop all the coroutines and 
+        *//* Stop all the coroutines and 
          * reset the object when the
          * scene changes or reloads, 
          * not doing this results in 
-         * some unexpected buggy behavior */
+         * some unexpected buggy behavior *//*
 
         StopAllCoroutines();
-    }
+    }*/
 
     private void OnDestroy()
     {
