@@ -6,23 +6,8 @@ using System;
 
 public class GameDataHandler : MonoBehaviour
 {
-    /* Persistence: Start */
-    public static GameDataHandler Instance { get; private set; }
+    // Event to determine data fetch success
     public static Action OnDataFetchSuccess;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-    /* Persistence: End */
 
     // Data
     private string dataObject;
@@ -31,12 +16,14 @@ public class GameDataHandler : MonoBehaviour
     private string serverURL = 
         "https://s3.ap-south-1.amazonaws.com/superstars.assetbundles.testbuild/doofus_game/doofus_diary.json";
 
+    // Global variables for player and pulpit data
     public static float PlayerSpeed;
     public static float MinPulpitDestroyTime, MaxPulpitDestroyTime, PulpitSpawnTime;
 
     void Start()
     {
         StartCoroutine(GetGameDataFromServer()); // Start the data fetch coroutine
+        
     }
 
     IEnumerator GetGameDataFromServer()
@@ -76,24 +63,29 @@ public class GameDataHandler : MonoBehaviour
             OnDataFetchSuccess?.Invoke();
         }
     }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
 }
 
-// Serializable Classes to store JSON data
+// serializable Classes to store JSON data
 
-[System.Serializable]
+[Serializable]
 public class GameData
 {
     public PlayerData player_data;
     public PulpitData pulpit_data;
 }
 
-[System.Serializable]
+[Serializable]
 public class PlayerData
 {
     public float speed;
 }
 
-[System.Serializable]
+[Serializable]
 public class PulpitData
 {
     public float min_pulpit_destroy_time;

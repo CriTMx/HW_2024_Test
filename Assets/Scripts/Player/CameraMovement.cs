@@ -4,20 +4,35 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-    [SerializeField] private GameObject player;
-    [SerializeField] private float cameraOffsetX = 0f;
+    [SerializeField] private GameObject player;             // stores player object to link camera movement with player movement
+    [SerializeField] private float cameraOffsetX = 0f;      // Camera offset values to determine fixed position away from player
     [SerializeField] private float cameraOffsetY = 2.5f;
     [SerializeField] private float cameraOffsetZ = -10f;
 
-    void Start()
+    private bool isDetached = false;    // to Change when the camera needs to stop following the player
+
+    private void Awake()
     {
-        
+        // Add detach method to player death event
+        PlayerDeath.OnPlayerDeath += DetachCamera;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        transform.position = player.transform.position + new Vector3(cameraOffsetX, cameraOffsetY, cameraOffsetZ);
+        // Only follow player position if player is still alive
+        if (!isDetached)
+            transform.position = player.transform.position + new Vector3(cameraOffsetX, cameraOffsetY, cameraOffsetZ);
+    }
+
+    private void OnDestroy()
+    {
+        // remove detach method from player death event
+        PlayerDeath.OnPlayerDeath -= DetachCamera;
+    }
+
+    private void DetachCamera()
+    {
+        // Stop following player when this is called
+        isDetached = true;
     }
 }

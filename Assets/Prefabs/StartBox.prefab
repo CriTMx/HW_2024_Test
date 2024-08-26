@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8861620089806750765}
   - component: {fileID: 2069381718861995225}
   - component: {fileID: 4415415042136939519}
-  - component: {fileID: 7004428133878276269}
   m_Layer: 0
   m_Name: StartBox
   m_TagString: Player
@@ -107,19 +106,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7004428133878276269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5209962386554798342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 079da4bd0f9dcf04996dd961e1cdaf1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pulpitSpawner: {fileID: 5918540031684692899, guid: 48674c28daf08eb4fb351a750af59519, type: 3}
 --- !u!1 &6808278174119724606
 GameObject:
   m_ObjectHideFlags: 0
