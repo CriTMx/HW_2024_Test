@@ -10,11 +10,6 @@ public class PulpitBehavior : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI timerText; // TMP text component to display remaining alive time of pulpit
 
-    void Start()
-    {
-
-    }
-
     void Update()
     {
         destroyTime -= Time.deltaTime;  // Subtract deltaTime from remaining alive time of pulpit

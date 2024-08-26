@@ -34,7 +34,7 @@ public class GameDataHandler : MonoBehaviour
         {
             Debug.Log(server.error); // Log error if server responds with connection error or protocol error
 
-            /* As there's no response from server, 
+            /* If there's no response from server, 
              * initialize game data values to 0 
              * to prevent unwanted behavior */
 
@@ -56,8 +56,8 @@ public class GameDataHandler : MonoBehaviour
             PulpitSpawnTime = gameData.pulpit_data.pulpit_spawn_time;
 
             /* Invoke the fetch success event 
-             * to make sure respective game objects 
-             * initialize their data */
+             * to make sure respective game 
+             * objects initialize their data */
 
             OnDataFetchSuccess?.Invoke();
         }

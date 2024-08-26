@@ -20,6 +20,8 @@ public class PlayerScore : MonoBehaviour
     private void Awake()
     {
         PlayerDeath.OnPlayerDeath += ShowGameOverScreen;
+
+        // Disable game over screen at the start of the game
         gameOverScreen.SetActive(false);
     }
 
@@ -61,7 +63,12 @@ public class PlayerScore : MonoBehaviour
 
     void ShowGameOverScreen()
     {
-        gameOverText.text = "Game Over!" + "\nScore: " + playerScore.ToString() + "\nTime: " + gameTime.ToString("#.#");
+        /* Summarize score and add it as text 
+         * on the game over screen,
+         * disable scoreboard UI and 
+         * show game over screen */
+
+        gameOverText.text = "Game Over!" + "\nScore: " + playerScore.ToString() + "\nTime: " + gameTime.ToString("#.#")+"s";
         gameOverScreen.SetActive(true);
         scoreboard.SetActive(false);
     }

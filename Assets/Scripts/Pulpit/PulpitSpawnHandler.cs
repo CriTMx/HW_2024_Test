@@ -57,6 +57,7 @@ public class PulpitSpawnHandler : MonoBehaviour
 
     void DeferredSpawnStartup()
     {
+        // Destroy the starting platform and drop player onto the first pulpit
         Destroy(startBox);
         StartCoroutine(SpawnerCoroutine());
     }
@@ -109,7 +110,7 @@ public class PulpitSpawnHandler : MonoBehaviour
             pulpitInstance = 
                 Instantiate(pulpitPrefab, pulpitInitialPos, pulpitPrefab.transform.rotation);
 
-            // This if-block will no longer be accessed throughout the rest of the game
+            // This if-block will no longer be accessed throughout the rest of the game until next restart
             firstPulpitSpawn = false;
 
             // Update current position with that of latest pulpit
@@ -120,7 +121,11 @@ public class PulpitSpawnHandler : MonoBehaviour
         {
             pulpitSpawnDirection = Random.Range(0, 4);  // Choose between 1 of 4 possible adjacent sides at random
 
-            float pulpitNextPosZ = (pulpitCurSize.z / 2) + (pulpitNextSize.z / 2);
+            /* Dynamically determine spawn position
+             * of the next pulpit based on size 
+             * of the latest pulpit and size of the
+             * next pulpit to spawn */
+            float pulpitNextPosZ = (pulpitCurSize.z / 2) + (pulpitNextSize.z / 2);  
             float pulpitNextPosX = (pulpitCurSize.x / 2) + (pulpitNextSize.x / 2);
 
             pulpitNextPos = pulpitSpawnDirection switch // Decides which adjacent side to spawn the next platform at
@@ -162,19 +167,12 @@ public class PulpitSpawnHandler : MonoBehaviour
 
     void DisableSpawning()
     {
+        /* Call this function when the player 
+         * dies to avoid continuous spawning
+         * of pulpits after death */
+
         shouldSpawn = false;
     }
-
-    /*private void OnDisable()
-    {
-        *//* Stop all the coroutines and 
-         * reset the object when the
-         * scene changes or reloads, 
-         * not doing this results in 
-         * some unexpected buggy behavior *//*
-
-        StopAllCoroutines();
-    }*/
 
     private void OnDestroy()
     {
