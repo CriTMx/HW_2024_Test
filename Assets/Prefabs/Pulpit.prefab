@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5819055689044237780}
   - component: {fileID: 7970331478629609469}
   - component: {fileID: 1642791241060794078}
+  - component: {fileID: 4059969136531168113}
   m_Layer: 0
   m_Name: Pulpit
   m_TagString: Pulpit
@@ -123,6 +124,18 @@ MonoBehaviour:
   destroyTime: 0
   hasContactedPlayer: 0
   timerText: {fileID: 3642117535090623757}
+--- !u!114 &4059969136531168113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 430071474862400622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31ce02b664382224597fa9694d12420e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &571851193378022310
 GameObject:
   m_ObjectHideFlags: 0

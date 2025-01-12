@@ -9,7 +9,6 @@ public class PlayerScore : MonoBehaviour
     private static int playerScore = 0;
     private static float gameTime = 0f;
 
-
     void Update()
     {
         // Update game time
@@ -29,7 +28,12 @@ public class PlayerScore : MonoBehaviour
             playerScore++;
         }
     }
-
+    
+    public static void ResetScoreboard()
+    {
+        playerScore = 0;
+        gameTime = 0f;
+    }
     public static int GetScore() => playerScore;
     public static float GetGameTime() => gameTime;
  

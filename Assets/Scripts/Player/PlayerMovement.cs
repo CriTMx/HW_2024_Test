@@ -24,10 +24,10 @@ public class PlayerMovement : MonoBehaviour
     {
         // Detect horizontal and vertical axis inputs to move the player
         moveX = Input.GetAxis("Horizontal"); 
-        moveZ = Input.GetAxis("Vertical"); 
+        moveZ = Input.GetAxis("Vertical");
 
         // Create a vec3 with required move parameters
-        Vector3 moveDir = new(moveX, 0f, moveZ);
+        Vector3 moveDir = new Vector3(moveX, 0f, moveZ);
 
         // Rotate move direction by 45 degrees for the orthographic view 
         moveDir = Quaternion.Euler(0f, 45f, 0f) * moveDir;

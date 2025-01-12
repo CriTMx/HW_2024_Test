@@ -6,14 +6,20 @@ using TMPro;
 public class PulpitBehavior : MonoBehaviour
 {
     public float destroyTime;
+    public float remainingLifetime;
     public bool hasContactedPlayer = false; // Boolean that tracks whether this pulpit instance has touched player before
 
     [SerializeField] private TextMeshProUGUI timerText; // TMP text component to display remaining alive time of pulpit
 
+    private void Start()
+    {
+        remainingLifetime = destroyTime;
+    }
+
     void Update()
     {
-        destroyTime -= Time.deltaTime;  // Subtract deltaTime from remaining alive time of pulpit
-        timerText.text = destroyTime.ToString("#.#") + "s"; // Update remaining time display of the pulpit
+        remainingLifetime -= Time.deltaTime;  // Subtract deltaTime from remaining alive time of pulpit
+        timerText.text = remainingLifetime.ToString("#.#") + "s"; // Update remaining time display of the pulpit
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -28,4 +34,9 @@ public class PulpitBehavior : MonoBehaviour
             hasContactedPlayer = true;
     }
 
+    private void OnDisable()
+    {
+        hasContactedPlayer = false;
+        remainingLifetime = destroyTime;
+    }
 }

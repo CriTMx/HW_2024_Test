@@ -6,7 +6,7 @@ using TMPro;
 
 public class PlayerDeath : MonoBehaviour
 {
-    public static Action OnPlayerDeath;         // Custom event to invoke to inform other scripts that the player has died
+    public static event Action OnPlayerDeath;         // Custom event to invoke to inform other scripts that the player has died
 
     [SerializeField] private float animationTime = 1.5f;    // Shrinking animation upon death, this determines the duration
     private float curTime = 0f;                             // Stores current time to compare with
@@ -32,7 +32,7 @@ public class PlayerDeath : MonoBehaviour
             yield return null;
         }
 
-        Destroy(gameObject);        // Destroy the player object upon death
-        OnPlayerDeath?.Invoke();    // Invoke OnPlayerDeath event for other scripts to use
+        gameObject.SetActive(false);    // Disable the player object upon death
+        OnPlayerDeath?.Invoke();        // Invoke OnPlayerDeath event for other scripts to use
     }
 }

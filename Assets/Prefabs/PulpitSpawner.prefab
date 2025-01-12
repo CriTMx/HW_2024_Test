@@ -44,12 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8129428cb46f2e94da50cf78bd022bf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pulpitPrefab: {fileID: 430071474862400622, guid: 101336eb8eea0d24db808f0979725997, type: 3}
+  pulpitPrefab: {fileID: 1642791241060794078, guid: 101336eb8eea0d24db808f0979725997, type: 3}
   startBox: {fileID: 5209962386554798342, guid: b79f9ac5b89a17941aa5ebcec94ccb14, type: 3}
   pulpitCurSize: {x: 7, y: 1, z: 7}
   pulpitNextSize: {x: 7, y: 1, z: 7}
   pulpitInitialPos: {x: 0, y: 0, z: 0}
-  minPulpitSizeRange: 8
-  maxPulpitSizeRange: 10
-  animationTime: 0.2
   maxPulpitsInScene: 2

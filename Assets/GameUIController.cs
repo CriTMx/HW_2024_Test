@@ -51,6 +51,9 @@ public class GameUIController : MonoBehaviour
          * disable scoreboard UI and 
          * show game over screen */
 
+        Debug.Log(PlayerScore.GetScore());
+        Debug.Log(PlayerScore.GetGameTime());
+
         string gameOverResultText = 
             "Game Over!" + "\nScore: " 
             + PlayerScore.GetScore().ToString() + 
@@ -58,6 +61,7 @@ public class GameUIController : MonoBehaviour
 
         gameOverText.text = gameOverResultText;
         gameOverScreen.SetActive(true);
+        PlayerScore.ResetScoreboard();
         scoreboard.SetActive(false);
     }
 

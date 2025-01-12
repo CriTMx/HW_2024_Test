@@ -425,7 +425,7 @@ Transform:
   m_GameObject: {fileID: 315515403}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.75, z: 0}
   m_LocalScale: {x: 1000, y: 1, z: 1000}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4318,6 +4318,10 @@ PrefabInstance:
       propertyPath: startBox
       value: 
       objectReference: {fileID: 812119695}
+    - target: {fileID: 5482159331091706671, guid: 48674c28daf08eb4fb351a750af59519, type: 3}
+      propertyPath: pulpitPrefab
+      value: 
+      objectReference: {fileID: 1642791241060794078, guid: 101336eb8eea0d24db808f0979725997, type: 3}
     - target: {fileID: 5482159331091706671, guid: 48674c28daf08eb4fb351a750af59519, type: 3}
       propertyPath: animationTime
       value: 0.2
