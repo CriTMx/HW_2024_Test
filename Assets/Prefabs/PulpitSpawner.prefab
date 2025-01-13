@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pulpitPrefab: {fileID: 1642791241060794078, guid: 101336eb8eea0d24db808f0979725997, type: 3}
   startBox: {fileID: 5209962386554798342, guid: b79f9ac5b89a17941aa5ebcec94ccb14, type: 3}
-  pulpitCurSize: {x: 7, y: 1, z: 7}
-  pulpitNextSize: {x: 7, y: 1, z: 7}
+  pulpitCurSize: {x: 9, y: 1, z: 9}
+  pulpitNextSize: {x: 9, y: 1, z: 9}
   pulpitInitialPos: {x: 0, y: 0, z: 0}
   maxPulpitsInScene: 2

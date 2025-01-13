@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
+
 
 public class PulpitSpawnHandler : MonoBehaviour
 {
@@ -32,11 +34,19 @@ public class PulpitSpawnHandler : MonoBehaviour
 
     private GameObjectPool<PulpitBehavior> pulpitPool;
 
+    [Inject]
+    public void Construct(GameObjectPool<PulpitBehavior> _pulpitPool)
+    {
+        pulpitPool = _pulpitPool;
+    }
+
+
     private void Awake()
     {
         // Add method to data fetch success event
         GameDataHandler.OnDataFetchSuccess += InitializePulpitData;
         PlayerDeath.OnPlayerDeath += DisableSpawning;
+        PulpitAnimator.OnShrinkComplete += DestroyPulpit;
     }
 
     void Start()
@@ -49,10 +59,17 @@ public class PulpitSpawnHandler : MonoBehaviour
         // Stop currently running coroutines just to be safe
         StopAllCoroutines();
 
-        pulpitPool = new GameObjectPool<PulpitBehavior>(pulpitPrefab, maxPulpitsInScene, transform);
-
         // Delayed spawn startup, lets the object catch up with json fetching
         Invoke("DeferredSpawnStartup", 1f);
+    }
+
+
+    private void InitializePulpitData()
+    {
+        // Initialize all fetched json data for the spawn conditions
+        minPulpitDestroyTime = GameDataHandler.MinPulpitDestroyTime;
+        maxPulpitDestroyTime = GameDataHandler.MaxPulpitDestroyTime;
+        pulpitSpawnTime = GameDataHandler.PulpitSpawnTime;
     }
 
     void DeferredSpawnStartup()
@@ -109,7 +126,8 @@ public class PulpitSpawnHandler : MonoBehaviour
             pulpitCurPos = pulpitNextPos;
         }
 
-
+        // Initialize destroyTime
+        SetDestroyTime(pulpitInstance);
 
         // Set new pulpit size (if random size every new pulpit)
         pulpitInstance.transform.localScale = pulpitNextSize;
@@ -117,8 +135,17 @@ public class PulpitSpawnHandler : MonoBehaviour
 
         // Update number of active pulpits
         countPulpitsInScene++;
+    }
 
-        DestroyPulpit(pulpitInstance);
+    void SetDestroyTime(GameObject _pulpitInstance)
+    {
+        destroyTime = Random.Range(minPulpitDestroyTime, maxPulpitDestroyTime);
+
+        // Set instance's destroyTime to generated destroyTime for display purpose
+        _pulpitInstance.GetComponent<PulpitBehavior>().destroyTime = destroyTime;
+        _pulpitInstance.GetComponent<PulpitAnimator>().destroyTime = destroyTime;
+
+        _pulpitInstance.GetComponent<PulpitAnimator>().InitializePulpit();
     }
 
     Vector3 GetRandomSpawnPosition()
@@ -144,15 +171,15 @@ public class PulpitSpawnHandler : MonoBehaviour
         return spawnPosChoices[pulpitSpawnPosChoice];
     }
 
-    void DestroyPulpit(GameObject _pulpit)
+    void DestroyPulpit(PulpitBehavior _pulpit)
     {
-        // Initialize destroyTime and start Destroy coroutine
-        destroyTime = Random.Range(minPulpitDestroyTime, maxPulpitDestroyTime);
-        // Set instance's destroyTime to generated destroyTime for display purpose
-        _pulpit.GetComponent<PulpitBehavior>().destroyTime = destroyTime;
-        _pulpit.GetComponent<PulpitAnimator>().destroyTime = destroyTime;
+        /*StartCoroutine(DestroyerCoroutine(_pulpit, destroyTime));*/
 
-        StartCoroutine(DestroyerCoroutine(_pulpit, destroyTime));
+        // Destroy pulpit once animation is complete
+        pulpitPool.Return(_pulpit);
+
+        // Update active pulpits count
+        countPulpitsInScene--;
     }
 
     IEnumerator DestroyerCoroutine(GameObject pulpit, float destroyTime)
@@ -160,11 +187,6 @@ public class PulpitSpawnHandler : MonoBehaviour
         // Wait for destroyTime seconds before destroying pulpits
         yield return new WaitForSeconds(destroyTime);
 
-        // Destroy pulpit once animation is complete
-        pulpitPool.Return(pulpit.GetComponent<PulpitBehavior>());
-
-        // Update active pulpits count
-        countPulpitsInScene--;
     }
 
 
@@ -189,13 +211,5 @@ public class PulpitSpawnHandler : MonoBehaviour
         // Remove method from action event
         GameDataHandler.OnDataFetchSuccess -= InitializePulpitData;
         PlayerDeath.OnPlayerDeath -= DisableSpawning;
-    }
-
-    private void InitializePulpitData()
-    {
-        // Initialize all fetched json data for the spawn conditions
-        minPulpitDestroyTime = GameDataHandler.MinPulpitDestroyTime;
-        maxPulpitDestroyTime = GameDataHandler.MaxPulpitDestroyTime;
-        pulpitSpawnTime = GameDataHandler.PulpitSpawnTime;
     }
 }

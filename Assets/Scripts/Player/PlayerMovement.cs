@@ -22,8 +22,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        Move();
+    }
+
+    private void Move()
+    {
         // Detect horizontal and vertical axis inputs to move the player
-        moveX = Input.GetAxis("Horizontal"); 
+        moveX = Input.GetAxis("Horizontal");
         moveZ = Input.GetAxis("Vertical");
 
         // Create a vec3 with required move parameters
@@ -33,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
         moveDir = Quaternion.Euler(0f, 45f, 0f) * moveDir;
 
         // Add motion to the player
-        transform.Translate(playerSpeed * Time.deltaTime * moveDir, Space.World); 
+        transform.Translate(playerSpeed * Time.deltaTime * moveDir, Space.World);
     }
 
     private void OnDestroy()
